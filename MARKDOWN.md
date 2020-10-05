@@ -58,7 +58,7 @@ Inclusión de gráficas
 
 Pueden incluirse gráficas, que deben estar en la misma estructura de directorios del repositorio:
 
-<img src="img/Tanh.png" width="640" align="center">
+<img src="img/prova.png" width="640" align="center">
 
 
 Esquemas y listas anidadas
