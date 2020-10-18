@@ -132,8 +132,8 @@ Ejercicios
 		
 	* Duración mínima razonable de los segmentos de voz y silencio.
 	
-		Duración mínima V : 200 ms.
-		Duración mínima S : 50 ms.
+		Duración mínima Voz: 200 ms.
+		Duración mínima Silencio: 50 ms.
 
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
 		
