@@ -115,32 +115,25 @@ Ejercicios
 	* Incremento del nivel potencia en dB, respecto al nivel correspondiente al silencio inicial, para
 	  estar seguros de que un segmento de señal se corresponde con voz.
 	  
-	  	Nivel de potencia:-52.089485 dBs
-		
-		ZCR: 805.031433 
+	  	Nivel de potencia:-52.089485 dBs.
+		ZCR: 805.031433. 
 		
 		Valores aproximados:
 
-		Vocales: 30,8 dB.
-		
-		Oclusivas:12,1 dB.
-		
-		Fricativas: 20,6 dB.
-		
-		Africativas: 15,7 dB.
-		
-		Nasales: 19,7 dB.
-		
-		Laterales: 17,8 dB.
-		
-		Vibrantes: 19,3 dB.
+			Vocales: 30,8 dB.
+			Oclusivas:12,1 dB.
+			Fricativas: 20,6 dB.
+			Africativas: 15,7 dB.
+			Nasales: 19,7 dB.
+			Laterales: 17,8 dB.
+			Vibrantes: 19,3 dB.
 
 		El fonema más bajo es de aproximadamente 10 dB, así que 10 dB.
 		
 	* Duración mínima razonable de los segmentos de voz y silencio.
 	
-		Duración mínima V : 200 ms
-		Duración mínima S : 50 ms
+		Duración mínima V : 200 ms.
+		Duración mínima S : 50 ms.
 
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
 		
