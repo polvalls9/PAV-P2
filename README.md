@@ -310,7 +310,7 @@ A continuación, se mira si el estado de la trama está definido o es el estado 
 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
 
-Tal como se puede ver en la gráfica, existen discrepancias entre el etiquetado manual (el .lab) y la detección automática (el .vad), ya que la detección automática se basa en un umbral de decisión que no se adapta al tipo de voz. Por lo que si la señal pasa un poco del umbral a causa del ruido ambiente, ya lo detecta como voz. Podemos ver como el etiquetado manual y automático coinciden en muchas de las tramas, hay una parte donde el `vad.c` confunde un silencio con un sonido sordo, pero referente a las demás partes el autómata acierta casi a la perfección.
+Tal como se puede ver en la gráfica, existen discrepancias entre el etiquetado manual (el .lab) y la detección automática (el .vad), ya que la detección automática se basa en un umbral de decisión que no se adapta al tipo de voz. Por lo que si la señal pasa un poco del umbral a causa del ruido ambiente, ya lo detecta como voz. Podemos ver como el etiquetado manual y automático coinciden en muchas de las tramas, hay una parte donde el `vad` confunde un silencio con un sonido sordo, pero referente a las demás partes el autómata acierta casi a la perfección.
 
 - Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a 
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo
