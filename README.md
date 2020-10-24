@@ -258,6 +258,8 @@ Ejercicios
   automática conseguida para el fichero grabado al efecto. 
 
 	<img src="img/DDDDAV2.jpg" width="640" align="center">
+	
+		// .lab es el nostre etiquetat manual i .vad es el que crea el programa
 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
 
@@ -267,7 +269,7 @@ Ejercicios
   
  	<img src="img/DDDDAV4.jpg" width="640" align="center">
 
-
+	
 ### Trabajos de ampliación
 
 #### Cancelación del ruido en los segmentos de silencio
