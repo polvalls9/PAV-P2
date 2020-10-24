@@ -143,8 +143,9 @@ Ejercicios
 		
 
 	2
-		`Features compute_features(const float *x, int N) {
-
+		```.sh 
+		
+		Features compute_features(const float *x, int N) {
  		Features feat;
   		feat.p = compute_power(x,N);
   		feat.am = compute_am(x, N);
@@ -152,17 +153,104 @@ Ejercicios
   		return feat;
   
 		}
+		```
 	3
-		``VAD_DATA * vad_open(float rate) {
-  		``VAD_DATA *vad_data = malloc(sizeof(VAD_DATA));
-  		```vad_data->state = ST_INIT;                           
-  		``vad_data->sampling_rate = rate;                       
-  		``vad_data->frame_length = rate * FRAME_TIME * 1e-3;
- 		`` vad_data->ko = 0;                                     //Umbral POTENCIA
- 		`` vad_data->last_change = 0;                            //Indica ULTIMA TRAMA con V o S
-  		``vad_data->frame = 0;                                  //Número de TRAMA actual
-  		``vad_data->last_state = ST_INIT;                       //Indica ULTIMO ESTADO (V o S)
- 		`` return vad_data;``
+		```.sh 
+		
+		VAD_DATA * vad_open(float rate) {
+  		VAD_DATA *vad_data = malloc(sizeof(VAD_DATA));
+  		vad_data->state = ST_INIT;                           
+  		vad_data->sampling_rate = rate;                       
+  		vad_data->frame_length = rate * FRAME_TIME * 1e-3;
+  		vad_data->ko = 0;                                     //Umbral POTENCIA
+  		vad_data->last_change = 0;                            //Indica ULTIMA TRAMA con V o S
+  		vad_data->frame = 0;                                  //Número de TRAMA actual
+  		vad_data->last_state = ST_INIT;                       //Indica ULTIMO ESTADO (V o S)
+  		return vad_data;
+		```
+	4
+		```.sh 
+		
+		VAD_STATE vad_close(VAD_DATA *vad_data) {
+  		VAD_STATE state = vad_data->last_state; 
+  		free(vad_data);
+  		return state;
+		}
+		```
+	5
+		```.sh 
+	
+		VAD_STATE vad(VAD_DATA *vad_data, float *x) {
+		Features f = compute_features(x, vad_data->frame_length);
+  		vad_data->last_feature = f.p; /* save feature, in case you want to show */
+ 		
+		switch (vad_data->state) {
+
+    		case ST_INIT:                                                           //CÁLCULO DEL UMBRAL DE POTENCIA
+    		if (vad_data->frame<N_INICIAL){
+        	vad_data->ko += pow(10, f.p/10);                                    //CALCULAMOS UMBRAL EN ESCALA LINEAL
+       
+   		 }else{
+
+        	vad_data->ko = 10*log10(vad_data->ko/N_INICIAL) * UMBRAL_K0;        //CONVERTIMOS a dB
+        	vad_data->state = ST_MAYBE_SILENCE;
+    		}
+    		break;
+    
+
+  		case ST_SILENCE:
+   		 if (f.p > vad_data->ko)
+
+   		 vad_data->state = ST_MAYBE_VOICE;
+   		 vad_data->last_state = ST_SILENCE; 
+    		vad_data->last_change = vad_data->frame;
+    
+   		 break;
+
+  		case ST_VOICE:
+	    	if (f.p < vad_data->ko)
+
+    		vad_data->state = ST_MAYBE_SILENCE;
+    		vad_data->last_state = ST_VOICE;
+    		vad_data->last_change = vad_data->frame;
+    
+    
+   		 break;
+	
+ 		 case ST_MAYBE_SILENCE:
+
+    		if(f.p > vad_data->ko + UMBRAL_K1){ 
+     		 vad_data->state = ST_VOICE;
+    		}
+    		else if ((vad_data->frame - vad_data->last_change) == TRAMAS_SILENCIO_NO_DECIDIDAS){
+     		 vad_data->state = ST_SILENCE;
+   		 }
+   		 break;
+
+  		case ST_MAYBE_VOICE:
+
+    		if(f.p < vad_data->ko + UMBRAL_K1){
+     		 vad_data->state = ST_SILENCE;
+    		}
+    		else if ((vad_data->frame - vad_data->last_change) == TRAMAS_VOZ_NO_DECIDIDAS){
+     		 vad_data->state = ST_VOICE;
+   		 }
+    		break;
+  
+ 		 }
+  
+  		vad_data->frame++;
+
+  		if (vad_data->state == ST_SILENCE || vad_data->state == ST_VOICE)
+    		return vad_data->state;
+  		else if (vad_data->state == ST_INIT)
+   		 return ST_SILENCE;
+  		else
+   		 return ST_UNDEF;
+
+		}
+		```
+	
 		
   
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
