@@ -206,9 +206,11 @@ Al cerrar el fichero, nos ponemos en el último estado ya que normalmente la úl
 La máquina de estados es la que dice de qué tipo de trama se trata y funciona de la siguiente forma. Primero se mira la trama anterior a la que se va a tratar, y se guarda el valor que tiene (S o V). Así si luego hay que mirarla tenemos almacenado su valor. 
 A continuación, miramos el número de estado en el que está la trama que hemos de tratar. 
 Si se encuentra en el estado inicial (ST_INIT), calculamos la potencia que tiene y ponemos un valor al umbral (ko). Pasamos dicho valor a dBs y le ponemos a la trama el valor de que quizás podría ser silencio (ST_MAYBE_SILENCE). 
+
 Si dicha trama se encuentra en estado de silencio (ST_SILENCE), miramos si la potencia de dicha trama está por encima del umbral ko o por debajo. Si está por encima, se le pone el estado de que quizás es voz (ST_MAYBE_VOICE) y al estado anterior le ponemos silencio (ST_SILENCE).
 Si dicha trama se encuentra en estado de voz (ST_VOICE), miramos si la potencia de dicha trama está por encima del umbral ko o por debajo. Si está por debajo, se le pone el estado de que quizás es voz (ST_MAYBE_SILENCE) y al estado anterior le ponemos silencio (ST_VOICE).
 Si dicha trama se encuentra en un estado de quizás silencio (ST_MAYBE_SILENCE)si la potencia está por encima del umbral ko se le cambia el estado a voz (ST_VOICE). En otros casos se le cambia el estado a silencio (ST_SILENCE). 
+
 Si dicha trama se encuentra en estado de quizás voz (ST_MAYBE_VOICE), se hace lo mismo que con la trama de quizás silencio pero a la inversa. Si la potencia está por debajo del umbral se le pone el estado de silencio (ST_SILENCE), y en otros casos se le cambia el estado a voz (ST_VOICE). 
 A continuación, se mira si el estado de la trama está definido o es el estado inicial. Si está definido como voz o silencio, la función devuelve el valor de dicho estado. Si el estado está definido como estado inicial, la función devuelve el valor de ST_SILENCE. Y si el estado es indefinido, la función devuelve el valor de ST_UNDEF.
 
@@ -308,7 +310,7 @@ A continuación, se mira si el estado de la trama está definido o es el estado 
 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
 
-Tal como se puede ver en la gráfica, existen discrepancias entre el etiquetado manual (el .lab) y la detección automática (el .vad), ya que la detección automática se basa en un umbral de decisión que no se adapta al tipo de voz. Por lo que si la señal pasa un poco del umbral a causa del ruido ambiente, ya lo detecta como voz. Podemos ver como el etiquetado manual y automático coinciden en muchas de las tramas, hay una parte donde el **vad** confunde un silencio con un sonido sordo, pero referente a las demás partes el autómata acierta casi a la perfección.
+Tal como se puede ver en la gráfica, existen discrepancias entre el etiquetado manual (el .lab) y la detección automática (el .vad), ya que la detección automática se basa en un umbral de decisión que no se adapta al tipo de voz. Por lo que si la señal pasa un poco del umbral a causa del ruido ambiente, ya lo detecta como voz. Podemos ver como el etiquetado manual y automático coinciden en muchas de las tramas, hay una parte donde el `vad.c` confunde un silencio con un sonido sordo, pero referente a las demás partes el autómata acierta casi a la perfección.
 
 - Evalúe los resultados sobre la base de datos `db.v4` con el script `vad_evaluation.pl` e inserte a 
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo
