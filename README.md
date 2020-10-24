@@ -105,17 +105,15 @@ Ejercicios
   continuación, una captura de `wavesurfer` en la que se vea con claridad la señal temporal, el contorno de
   potencia y la tasa de cruces por cero, junto con el etiquetado manual de los segmentos.
 
-<img src="img/1.1.png" width="640" align="center">
+	<img src="img/1.1.png" width="640" align="center">
 
 - A la vista de la gráfica, indique qué valores considera adecuados para las magnitudes siguientes:
-
-		//poner captura de la grafica
 
 
 	* Incremento del nivel potencia en dB, respecto al nivel correspondiente al silencio inicial, para
 	  estar seguros de que un segmento de señal se corresponde con voz.
 	  
-	  	Nivel de potencia:-52.089485 dBs.
+	  	Nivel de potencia: -52.089485 dBs.
 		
 		
 	* Duración mínima razonable de los segmentos de voz y silencio.
@@ -125,7 +123,7 @@ Ejercicios
 
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
 		
-		//COMENTAR CON POL
+		Vemos que cuando es un sonido fricativo la tasa de cruces por cero aumenta, ya que aumentamos la frecuencia y eso contribuye a la tasa de cruces 		 por cero. Cuando el sonido es sonoro tiene una tasa de cruces por cero mucho más baja ya que la frecuencia disminuye y cuando no hay sonido la 		tasa de cruces por cero está entre medio de esas dos.
 
 ### Desarrollo del detector de actividad vocal
 
@@ -133,6 +131,7 @@ Ejercicios
   exacto como sea posible. Tome como objetivo la maximización de la puntuación-F `TOTAL`.
 	
 	1
+		Creación de Constantes y Umbrales
 		
 		const float FRAME_TIME = 10.0F; /* in ms. */
 		const int TRAMAS_VOZ_NO_DECIDIDAS = 1;     	// Número de TRAMAS de MAYBE_VOICE MÁXIMAS
@@ -143,7 +142,7 @@ Ejercicios
 		
 
 	2
-		```.sh 
+		Cálculo de Potencia, ZCR y Amplitud Media
 		
 		Features compute_features(const float *x, int N) {
  		Features feat;
@@ -155,7 +154,7 @@ Ejercicios
 		}
 		
 	3
-		```.sh 
+		Abrimos el fichero
 		
 		VAD_DATA * vad_open(float rate) {
   		VAD_DATA *vad_data = malloc(sizeof(VAD_DATA));
@@ -169,7 +168,7 @@ Ejercicios
   		return vad_data;
 		
 	4
-		```.sh 
+		Cerramos el fichero 
 		
 		VAD_STATE vad_close(VAD_DATA *vad_data) {
   		VAD_STATE state = vad_data->last_state; 
@@ -178,7 +177,7 @@ Ejercicios
 		}
 		
 	5
-		```.sh 
+		Máquina de Estados FSA 
 	
 		VAD_STATE vad(VAD_DATA *vad_data, float *x) {
 		Features f = compute_features(x, vad_data->frame_length);
@@ -254,7 +253,7 @@ Ejercicios
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
   automática conseguida para el fichero grabado al efecto. 
 
-<img src="img/DDDDAV2.jpg" width="640" align="center">
+	<img src="img/DDDDAV2.jpg" width="640" align="center">
 
 - Explique, si existen. las discrepancias entre el etiquetado manual y la detección automática.
 
@@ -262,7 +261,7 @@ Ejercicios
   continuación las tasas de sensibilidad (*recall*) y precisión para el conjunto de la base de datos (sólo
   el resumen).
   
-  <img src="img/DDDDAV4.jpg" width="640" align="center">
+ 	<img src="img/DDDDAV4.jpg" width="640" align="center">
 
 
 ### Trabajos de ampliación
