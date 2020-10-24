@@ -132,14 +132,14 @@ Ejercicios
 - Complete el código de los ficheros de la práctica para implementar un detector de actividad vocal tan
   exacto como sea posible. Tome como objetivo la maximización de la puntuación-F `TOTAL`.
 	
-		```.sh
+		
 		const float FRAME_TIME = 10.0F; /* in ms. */
 		const int TRAMAS_VOZ_NO_DECIDIDAS = 1;     	// Número de TRAMAS de MAYBE_VOICE MÁXIMAS
 		const int TRAMAS_SILENCIO_NO_DECIDIDAS = 11;	// Número de TRAMAS de MAYBE_SILENCE MÁXIMAS
 		const int N_INICIAL = 13;                       // Número de ITERACIONES para el CÁLCULO de UMBRAL k0
 		const float UMBRAL_K0 = 0.9;			// Umbral para la POTENCIA
 		const float UMBRAL_K1 = 4.72;			// Umbral para la Potencia en caso de MAYBE_VOICE o MAYBE_SILENCE
-		```
+		
 
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
   automática conseguida para el fichero grabado al efecto. 
