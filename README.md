@@ -139,7 +139,9 @@ Ejercicios
 - Complete el código de los ficheros de la práctica para implementar un detector de actividad vocal tan
   exacto como sea posible. Tome como objetivo la maximización de la puntuación-F `TOTAL`.
 	
-	1
+### Código del fichero **vad.c**
+
+1
 		Creación de Constantes y Umbrales
 		
 		const float FRAME_TIME = 10.0F; /* in ms. */
@@ -150,7 +152,7 @@ Ejercicios
 		const float UMBRAL_K1 = 4.72;			// Umbral para la Potencia en caso de MAYBE_VOICE o MAYBE_SILENCE
 		
 
-	2
+2
 		Cálculo de Potencia, ZCR y Amplitud Media
 		
 		Features compute_features(const float *x, int N) {
@@ -163,7 +165,7 @@ Ejercicios
   
 		}
 		
-	3
+3
 		Abrimos el fichero
 		
 		VAD_DATA * vad_open(float rate) {
@@ -178,7 +180,7 @@ Ejercicios
   		vad_data->last_state = ST_INIT;                       //Indica ULTIMO ESTADO (V o S)
   		return vad_data;
 		
-	4
+4
 		Cerramos el fichero 
 		
 		VAD_STATE vad_close(VAD_DATA *vad_data) {
@@ -188,7 +190,7 @@ Ejercicios
   		return state;
 		}
 		
-	5
+5
 		Máquina de Estados FSA 
 	
 		VAD_STATE vad(VAD_DATA *vad_data, float *x) {
@@ -261,8 +263,23 @@ Ejercicios
    		 return ST_UNDEF;
 
 		}
+
+### Código del fichero **vad.h**
 		
-  
+		typedef struct {
+  		VAD_STATE state;
+  		VAD_STATE last_state;
+  		float sampling_rate;
+  		unsigned int frame_length;
+  		float last_feature; /* for debuggin purposes */
+  		float ko;
+  		int frame;
+  		int last_change;
+
+		} VAD_DATA;	
+
+		
+ 
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
   automática conseguida para el fichero grabado al efecto. 
 
