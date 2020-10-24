@@ -145,6 +145,7 @@ Ejercicios
 		Cálculo de Potencia, ZCR y Amplitud Media
 		
 		Features compute_features(const float *x, int N) {
+		
  		Features feat;
   		feat.p = compute_power(x,N);
   		feat.am = compute_am(x, N);
@@ -157,6 +158,7 @@ Ejercicios
 		Abrimos el fichero
 		
 		VAD_DATA * vad_open(float rate) {
+		
   		VAD_DATA *vad_data = malloc(sizeof(VAD_DATA));
   		vad_data->state = ST_INIT;                           
   		vad_data->sampling_rate = rate;                       
@@ -171,6 +173,7 @@ Ejercicios
 		Cerramos el fichero 
 		
 		VAD_STATE vad_close(VAD_DATA *vad_data) {
+		
   		VAD_STATE state = vad_data->last_state; 
   		free(vad_data);
   		return state;
@@ -180,6 +183,7 @@ Ejercicios
 		Máquina de Estados FSA 
 	
 		VAD_STATE vad(VAD_DATA *vad_data, float *x) {
+		
 		Features f = compute_features(x, vad_data->frame_length);
   		vad_data->last_feature = f.p; /* save feature, in case you want to show */
  		
