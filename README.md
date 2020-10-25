@@ -127,8 +127,8 @@ Ejercicios
 	* ¿Es capaz de sacar alguna conclusión a partir de la evolución de la tasa de cruces por cero?
 		
 		
-	A partir de la evolución de cruces por cero, podemos observar que esta se comporta en función de la frecuencia. Y por ello se puede comprobar que cuando el 			sonido es fricativo, aumenta la frecuencia y por tanto la tasa de cruces por cero también lo hace. Asimismo sucede lo mismo a la inversa con los sonidos sonoros. 		Al haber un sonido sonoro, como la frecuencia queda considerablemente disminuida, la tasa de cruces por cero disminuye. En el caso de no tener sonido vemos que la 		tasa de cruces por cero se queda en un punto medio entre los dos anteriores casos. 
-		
+	A partir de la evolución de cruces por cero, podemos observar que esta se comporta en función de la frecuencia. Y por ello se puede comprobar que cuando 	el 	sonido es fricativo, aumenta la frecuencia y por tanto la tasa de cruces por cero también lo hace. Asimismo sucede lo mismo a la inversa con los 	sonidos sonoros. Al haber un sonido sonoro, como la frecuencia queda considerablemente disminuida, la tasa de cruces por cero disminuye. En el caso de no 	tener sonido vemos que la tasa de cruces por cero se queda en un punto medio entre los dos anteriores casos. 
+
 
 ### Desarrollo del detector de actividad vocal
 
@@ -139,28 +139,31 @@ Ejercicios
 
 
 #### Creación de Constantes y Umbrales
-		
-		const float FRAME_TIME = 10.0F; /* in ms. */
-		const int TRAMAS_VOZ_NO_DECIDIDAS = 1;     	// Número de TRAMAS de MAYBE_VOICE MÁXIMAS
-		const int TRAMAS_SILENCIO_NO_DECIDIDAS = 11;	// Número de TRAMAS de MAYBE_SILENCE MÁXIMAS
-		const int N_INICIAL = 13;			// Número de ITERACIONES para el CÁLCULO de UMBRAL k0
-		const float UMBRAL_K0 = 0.9;			// Umbral para la POTENCIA
-		const float UMBRAL_K1 = 4.72;			// Umbral para la Potencia en caso de MAYBE_VOICE o MAYBE_SILENCE
-		
+
+```c
+const float FRAME_TIME = 10.0F; /* in ms. */
+const int TRAMAS_VOZ_NO_DECIDIDAS = 1;     	// Número de TRAMAS de MAYBE_VOICE MÁXIMAS
+const int TRAMAS_SILENCIO_NO_DECIDIDAS = 11;	// Número de TRAMAS de MAYBE_SILENCE MÁXIMAS
+const int N_INICIAL = 13;			// Número de ITERACIONES para el CÁLCULO de UMBRAL k0
+const float UMBRAL_K0 = 0.9;			// Umbral para la POTENCIA
+const float UMBRAL_K1 = 4.72;			// Umbral para la Potencia en caso de MAYBE_VOICE o MAYBE_SILENCE
+```
 
 #### Cálculo de Potencia, ZCR y Amplitud Media
 		
 Para realizar el cálculo de la potencia, ZCR y amplitud media hacemos uso de las funciones creadas en la práctica anterior, pasando los parámetros que estas necesitan. La función ‘ Features compute_features ’ Nos guarda los valores calculados de Potencia, ZCR y Amplitud Media en la variable feat y devuelve dicha variable. 
+
+```c
+Features compute_features(const float *x, int N) {
 		
-		Features compute_features(const float *x, int N) {
-		
- 		Features feat;
-  		feat.p = compute_power(x,N);
-  		feat.am = compute_am(x, N);
-  		feat.zcr = compute_zcr(x, N, N/(FRAME_TIME*1e-03)); 
-  		return feat;
+Features feat;
+feat.p = compute_power(x,N);
+feat.am = compute_am(x, N);
+feat.zcr = compute_zcr(x, N, N/(FRAME_TIME*1e-03)); 
+ return feat;
   
-		}
+}
+```
 		
 #### Abrimos el fichero
 		
@@ -174,32 +177,30 @@ frame nos indica la posición de la trama en la que estamos en ese momento.
 
 last_state nos indica el valor del último estado no indefinido, es decir indica si era V (Voz) o S (Silencio).
 
+```c		
+VAD_DATA * vad_open(float rate) {		
+VAD_DATA *vad_data = malloc(sizeof(VAD_DATA));
+vad_data->state = ST_INIT;                            
+vad_data->sampling_rate = rate;                       
+vad_data->frame_length = rate * FRAME_TIME * 1e-3;
+vad_data->ko = 0;                                     //Umbral POTENCIA
+vad_data->last_change = 0;                            //Indica ULTIMA TRAMA con V o S
+vad_data->frame = 0;                                  //Número de TRAMA actual
+vad_data->last_state = ST_INIT;                       //Indica ULTIMO ESTADO (V o S)
+return vad_data;
 		
-		VAD_DATA * vad_open(float rate) {
-		
-  		VAD_DATA *vad_data = malloc(sizeof(VAD_DATA));
-  		vad_data->state = ST_INIT;                           
-  		vad_data->sampling_rate = rate;                       
-  		vad_data->frame_length = rate * FRAME_TIME * 1e-3;
-  		vad_data->ko = 0;                                     //Umbral POTENCIA
-  		vad_data->last_change = 0;                            //Indica ULTIMA TRAMA con V o S
-  		vad_data->frame = 0;                                  //Número de TRAMA actual
-  		vad_data->last_state = ST_INIT;                       //Indica ULTIMO ESTADO (V o S)
-  		return vad_data;
-		
-
+```
 #### Cerramos el fichero 
 		
 Al cerrar el fichero, nos ponemos en el último estado ya que normalmente la última trama será el mismo estado que justo el anterior. 
 
-		
-		VAD_STATE vad_close(VAD_DATA *vad_data) {
-		
-  		VAD_STATE state = vad_data->last_state; 
-  		free(vad_data);
-  		return state;
-		}
-		
+```c
+VAD_STATE vad_close(VAD_DATA *vad_data) {		
+VAD_STATE state = vad_data->last_state; 
+free(vad_data);
+return state;
+}
+```
 
 #### Máquina de Estados FSA 
 		
@@ -214,93 +215,95 @@ Si dicha trama se encuentra en un estado de quizás silencio (ST_MAYBE_SILENCE)s
 Si dicha trama se encuentra en estado de quizás voz (ST_MAYBE_VOICE), se hace lo mismo que con la trama de quizás silencio pero a la inversa. Si la potencia está por debajo del umbral se le pone el estado de silencio (ST_SILENCE), y en otros casos se le cambia el estado a voz (ST_VOICE). 
 A continuación, se mira si el estado de la trama está definido o es el estado inicial. Si está definido como voz o silencio, la función devuelve el valor de dicho estado. Si el estado está definido como estado inicial, la función devuelve el valor de ST_SILENCE. Y si el estado es indefinido, la función devuelve el valor de ST_UNDEF.
 
-	
-		VAD_STATE vad(VAD_DATA *vad_data, float *x) {
-		
-		Features f = compute_features(x, vad_data->frame_length);
-  		vad_data->last_feature = f.p; /* save feature, in case you want to show */
- 		
-		switch (vad_data->state) {
+```c
+VAD_STATE vad(VAD_DATA *vad_data, float *x) {
 
-    		case ST_INIT:                                                           //CÁLCULO DEL UMBRAL DE POTENCIA
-    		if (vad_data->frame<N_INICIAL){
-        	vad_data->ko += pow(10, f.p/10);                                    //CALCULAMOS UMBRAL EN ESCALA LINEAL
+  Features f = compute_features(x, vad_data->frame_length);
+  vad_data->last_feature = f.p; /* save feature, in case you want to show */
+ 
+
+  switch (vad_data->state) {
+
+    case ST_INIT:                                                           //CÁLCULO DEL UMBRAL DE POTENCIA
+    if (vad_data->frame<N_INICIAL){
+        vad_data->ko += pow(10, f.p/10);                                    //CALCULAMOS UMBRAL EN ESCALA LINEAL
        
-   		 }else{
+    }else{
 
-        	vad_data->ko = 10*log10(vad_data->ko/N_INICIAL) * UMBRAL_K0;        //CONVERTIMOS a dB
-        	vad_data->state = ST_MAYBE_SILENCE;
-    		}
-    		break;
+        vad_data->ko = 10*log10(vad_data->ko/N_INICIAL) * UMBRAL_K0;        //CONVERTIMOS a dB
+        vad_data->state = ST_MAYBE_SILENCE;
+    }
+    break;
     
 
-  		case ST_SILENCE:
-   		 if (f.p > vad_data->ko)
+  case ST_SILENCE:
+    if (f.p > vad_data->ko)
 
-   		 vad_data->state = ST_MAYBE_VOICE;
-   		 vad_data->last_state = ST_SILENCE; 
-    		vad_data->last_change = vad_data->frame;
+    vad_data->state = ST_MAYBE_VOICE;
+    vad_data->last_state = ST_SILENCE; 
+    vad_data->last_change = vad_data->frame;
     
-   		 break;
+    break;
 
-  		case ST_VOICE:
-	    	if (f.p < vad_data->ko)
+  case ST_VOICE:
+    if (f.p < vad_data->ko)
 
-    		vad_data->state = ST_MAYBE_SILENCE;
-    		vad_data->last_state = ST_VOICE;
-    		vad_data->last_change = vad_data->frame;
+    vad_data->state = ST_MAYBE_SILENCE;
+    vad_data->last_state = ST_VOICE;
+    vad_data->last_change = vad_data->frame;
     
     
-   		 break;
-	
- 		 case ST_MAYBE_SILENCE:
+    break;
 
-    		if(f.p > vad_data->ko + UMBRAL_K1){ 
-     		 vad_data->state = ST_VOICE;
-    		}
-    		else if ((vad_data->frame - vad_data->last_change) == TRAMAS_SILENCIO_NO_DECIDIDAS){
-     		 vad_data->state = ST_SILENCE;
-   		 }
-   		 break;
+  case ST_MAYBE_SILENCE:
 
-  		case ST_MAYBE_VOICE:
+    if(f.p > vad_data->ko + UMBRAL_K1){ 
+      vad_data->state = ST_VOICE;
+    }
+    else if ((vad_data->frame - vad_data->last_change) == TRAMAS_SILENCIO_NO_DECIDIDAS){
+      vad_data->state = ST_SILENCE;
+    }
+    break;
 
-    		if(f.p < vad_data->ko + UMBRAL_K1){
-     		 vad_data->state = ST_SILENCE;
-    		}
-    		else if ((vad_data->frame - vad_data->last_change) == TRAMAS_VOZ_NO_DECIDIDAS){
-     		 vad_data->state = ST_VOICE;
-   		 }
-    		break;
+  case ST_MAYBE_VOICE:
+
+    if(f.p < vad_data->ko + UMBRAL_K1){
+      vad_data->state = ST_SILENCE;
+    }
+    else if ((vad_data->frame - vad_data->last_change) == TRAMAS_VOZ_NO_DECIDIDAS){
+      vad_data->state = ST_VOICE;
+    }
+    break;
   
- 		 }
+  }
   
-  		vad_data->frame++;
+  
+  vad_data->frame++;
 
-  		if (vad_data->state == ST_SILENCE || vad_data->state == ST_VOICE)
-    		return vad_data->state;
-  		else if (vad_data->state == ST_INIT)
-   		 return ST_SILENCE;
-  		else
-   		 return ST_UNDEF;
+  if (vad_data->state == ST_SILENCE || vad_data->state == ST_VOICE)
+    return vad_data->state;
+  else if (vad_data->state == ST_INIT)
+    return ST_SILENCE;
+  else
+    return ST_UNDEF;
 
-		}
-
+}
+```
 ### Código del fichero **vad.h**
-		
-		typedef struct {
-  		VAD_STATE state;
-  		VAD_STATE last_state;
-  		float sampling_rate;
-  		unsigned int frame_length;
-  		float last_feature; /* for debuggin purposes */
-  		float ko;
-  		int frame;
-  		int last_change;
 
-		} VAD_DATA;	
+```c
+typedef struct {
+VAD_STATE state;
+VAD_STATE last_state;
+float sampling_rate;
+unsigned int frame_length;
+float last_feature; /* for debuggin purposes */
+float ko;
+int frame;
+int last_change;
 
-		
+} VAD_DATA;
+```
  
 - Inserte una gráfica en la que se vea con claridad la señal temporal, el etiquetado manual y la detección
   automática conseguida para el fichero grabado al efecto. 
