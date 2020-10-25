@@ -152,9 +152,6 @@ VAD_STATE vad(VAD_DATA *vad_data, float *x) {
       vad_data->state = ST_VOICE;
     }
     break;
-
-  case ST_UNDEF:
-    break;
   
   }
   
